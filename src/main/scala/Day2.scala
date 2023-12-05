@@ -27,7 +27,7 @@ object Day2 extends AoC:
               .withDefaultValue(0)
       id.toInt -> rounds
 
-  override def a(lines: Vector[String]): Int =
+  override def a(lines: Vector[String]): Long =
     val possibilities = lines
       .map(parse)
       .collect:
@@ -36,7 +36,7 @@ object Day2 extends AoC:
     possibilities.sum
   end a
 
-  override def b(lines: Vector[String]): Int =
+  override def b(lines: Vector[String]): Long =
     implicit val maxMonoid: Monoid[Int] = Monoid.instance(_ max _, 0)
 
     val powers = lines

@@ -8,9 +8,9 @@ trait AoC:
 
   protected val NumRe: Regex = "\\d+".r
 
-  def a(lines: Vector[String]): Int
+  def a(lines: Vector[String]): Long
 
-  def b(lines: Vector[String]): Int
+  def b(lines: Vector[String]): Long
 
   def main(args: Array[String]): Unit =
 
