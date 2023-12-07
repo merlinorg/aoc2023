@@ -4,52 +4,30 @@ import scalaz.*
 import scalaz.Scalaz.*
 
 object Day7 extends AoC:
-  private val strengthsA =
-    List('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+  import scala.math.Ordering.Implicits.seqOrdering
 
-  private def strengthA(hand: String): List[Int] =
-    strengthsA.map(c => hand.count(_ == c)).sorted.reverse
-
-  private def compare(
-    hand0: String,
-    hand1: String,
-    strengthF: String => List[Int],
-    strengths: List[Char]
-  ): Boolean =
-    val card0 = strengthF(hand0)
-    val card1 = strengthF(hand1)
-    val ord   = card0 cmp card1
-    (ord == Ordering.LT) || (ord == Ordering.EQ) && hand0
-      .zip(hand1)
-      .find((c0, c1) => c0 != c1)
-      .exists((c0, c1) => strengths.indexOf(c0) > strengths.indexOf(c1))
-
-  override def a(lines: Vector[String]): Long =
+  private def f(lines: Vector[String], strengthF: String => List[Int]): Long =
     val hands  = lines.map:
       case s"$hand $bid" => hand -> bid.toLong
-    val sorted = hands.sortWith:
-      case ((a0, _), (a1, _)) => compare(a0, a1, strengthA, strengthsA)
-    val scored = sorted.zipWithIndex.map:
-      case ((_, bid), rank) => (rank + 1) * bid
-    scored.sum
-  end a
+    val sorted = hands.map(_.leftMap(strengthF)).sortBy(_._1)
+    sorted.map(_._2).zipWithIndex.foldMap((bid, rank) => (rank + 1) * bid)
 
-  private val strengthsB =
-    List('A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J')
+  private val strengthsA = "23456789TJQKA".toList
+
+  private def strengthA(hand: String): List[Int] =
+    strengthsA.map(c => hand.count(_ == c)).sorted.reverse ::: hand.toList.map(
+      strengthsA.indexOf
+    )
+
+  override def a(lines: Vector[String]): Long = f(lines, strengthA)
+
+  private val strengthsB = "J23456789TQKA".toList
 
   private def strengthB(hand: String): List[Int] =
-    val jokers = hand.count(_ == 'J')
-    val best :: rest = strengthsB.filter(_ != 'J').map(c => hand.count(_ == c)).sorted.reverse: @unchecked
-    jokers + best :: rest
+    val jokers :: cards = strengthsB.map(c => hand.count(_ == c)): @unchecked
+    val best :: rest    = cards.sorted.reverse: @unchecked
+    jokers + best :: rest ::: hand.toList.map(strengthsB.indexOf)
 
-  override def b(lines: Vector[String]): Long =
-    val hands = lines.map:
-      case s"$hand $bid" => hand -> bid.toLong
-    val sorted = hands.sortWith:
-      case ((a0, _), (a1, _)) => compare(a0, a1, strengthB, strengthsB)
-    val scored = sorted.zipWithIndex.map:
-      case ((_, bid), rank) => (rank + 1) * bid
-    scored.sum
-  end b
+  override def b(lines: Vector[String]): Long = f(lines, strengthB)
 
 end Day7
