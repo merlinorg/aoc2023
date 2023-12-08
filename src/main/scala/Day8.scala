@@ -25,13 +25,10 @@ object Day8 extends AoC:
 
   // https://stackoverflow.com/questions/40875537/fp-lcm-in-scala-in-1-line
   private def lcm(list: Iterable[Long]): Long =
-    list.foldLeft(1: Long): (a, b) =>
-      b * a / LazyList
-        .iterate((a, b)) { case (x, y) => (y, x % y) }
-        .dropWhile(_._2 != 0)
-        .head
-        ._1
-        .abs
+    @tailrec def loop(x: Long, y: Long): Long =
+      if (y == 0) x else loop(y, x % y)
+    list.foldLeft(1L): (a, b) =>
+      b * a / loop(a, b)
 
   override def b(lines: Vector[String]): Long =
     val (lr, rules) = parse(lines)
