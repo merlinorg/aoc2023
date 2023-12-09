@@ -1,5 +1,8 @@
 package org.merlin.aoc2023
 
+import scalaz.*
+import scalaz.Scalaz.*
+
 import scala.annotation.tailrec
 
 object Day9 extends AoC:
@@ -15,18 +18,16 @@ object Day9 extends AoC:
     lines
       .map: line =>
         NumRe.findAllIn(line).map(_.toLong).toList.reverse
-      .map: values =>
+      .foldMap: values =>
         loop(values, 0)
-      .sum
   end a
 
   override def b(lines: Vector[String]): Long =
     lines
       .map: line =>
         NumRe.findAllIn(line).map(_.toLong).toList
-      .map: values =>
+      .foldMap: values =>
         loop(values, 0)
-      .sum
   end b
 
 end Day9
