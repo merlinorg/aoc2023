@@ -6,7 +6,7 @@ import scala.util.{Try, Using}
 
 trait AoC:
 
-  protected val NumRe: Regex = "\\d+".r
+  protected val NumRe: Regex = "-?\\d+".r
 
   def a(lines: Vector[String]): Long
 
