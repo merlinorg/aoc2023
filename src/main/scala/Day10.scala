@@ -46,7 +46,10 @@ object Day10 extends AoC:
     longestLoop(lines).length / 2
   end a
 
-  private val walls = Set('|', 'J', 'L')
+  private val walls = connections
+    .collect:
+      case (chr, dirs) if chr != 'S' && dirs.contains(N) => chr
+    .toSet
 
   override def b(lines: Vector[String]): Long =
     val w    = lines.head.length
