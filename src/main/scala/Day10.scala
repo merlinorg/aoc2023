@@ -46,23 +46,29 @@ object Day10 extends AoC:
     longestLoop(lines).length / 2
   end a
 
-  // I ought to see what S is and add to this list if necessary sigh
   private val walls = Set('|', 'J', 'L')
 
   override def b(lines: Vector[String]): Long =
-    val w = lines.head.length
-    val h = lines.length
+    val w    = lines.head.length
+    val path = longestLoop(lines)
+    val els  = path.toSet
+    val s    = path.head
 
-    val path = longestLoop(lines).toSet
+    val sWall    = connections.exists:
+      case (chr, dirs) =>
+        walls(chr) && dirs
+          .map(_ |+| s)
+          .forall(p => p == path.reverse.tail.head || p == path.tail.head)
+    val allWalls = if (sWall) walls + 'S' else walls
 
     val insides = for
-      y           <- 0 until h
+      y           <- lines.indices
       (p, inside) <- (0 until w).scanLeft(-1 -> -1 -> false):
                        case ((_, inside), x) =>
-                         val chr    = charAt(x -> y, lines)
-                         val change = path(x -> y) && walls(chr)
-                         x -> y -> (inside ^ change)
-      if inside && !path.contains(p)
+                         val p      = x -> y
+                         val change = els(p) && allWalls(charAt(p, lines))
+                         p -> (inside ^ change)
+      if inside && !els.contains(p)
     yield p
 
     insides.length
