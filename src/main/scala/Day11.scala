@@ -9,37 +9,31 @@ object Day11 extends AoC:
   extension (pt: Point)
     def Δ(op: Point): Long = (pt._1 - op._1).abs + (pt._2 - op._2).abs
 
-  private def locations(
+  private def inflate(
     lines: Vector[Vector[Char]],
-    expansion: Long
+    factor: Long
   ): IndexedSeq[Long] =
-    lines.scanLeft(0L):
-      case (offset, line) =>
-        if (!line.contains('#')) offset + expansion else offset + 1
+    lines.scanLeft(0L): (offset, line) =>
+      if (!line.contains('#')) offset + factor else offset + 1
 
   private def allStars(
-    lines: Vector[Vector[Char]],
-    expansion: Long
+    lines: Vector[String],
+    factor: Long
   ): Vector[Point] =
-    val yLocs = locations(lines, expansion)
-    val xLocs = locations(lines.transpose, expansion)
+    val xs = inflate(lines.transpose, factor)
+    val ys = inflate(lines.map(_.toVector), factor)
     for
-      (line, y) <- lines.zip(yLocs)
-      (chr, x)  <- line.zip(xLocs)
+      (line, y) <- lines.zip(ys)
+      (chr, x)  <- line.zip(xs)
       if chr == '#'
     yield x -> y
 
-  private def sumDistances(stars: Iterator[Vector[Point]]): Long =
-    stars.toList.foldMap:
-      case Vector(p0, p1) => p0 Δ p1
-      case _              => 0
-
   override def a(lines: Vector[String]): Long =
-    sumDistances(allStars(lines.map(_.toVector), 2).combinations(2))
+    allStars(lines, 2).combinations(2).toList.foldMap(v => v(0) Δ v(1))
   end a
 
   override def b(lines: Vector[String]): Long =
-    sumDistances(allStars(lines.map(_.toVector), 1000000).combinations(2))
+    allStars(lines, 1000000).combinations(2).toList.foldMap(v => v(0) Δ v(1))
   end b
 
 end Day11
