@@ -6,48 +6,38 @@ import scalaz.Scalaz.*
 object Day11 extends AoC:
   type Point = (Long, Long)
 
-  private def xExpansions(
-    lines: Vector[String],
-    expansion: Long
-  ): IndexedSeq[Long] =
-    (0 until lines.head.length).scanLeft(0L):
-      case (offset, x) =>
-        if (lines.forall(_.charAt(x) == '.')) expansion + offset else offset
-
-  private def yExpansions(
-    lines: Vector[String],
+  private def locations(
+    lines: Vector[Vector[Char]],
     expansion: Long
   ): IndexedSeq[Long] =
     lines.scanLeft(0L):
       case (offset, line) =>
-        if (!line.contains('#')) expansion + offset else offset
+        if (!line.contains('#')) offset + expansion else offset + 1
 
-  private def allStars(lines: Vector[String], expansion: Long): Vector[Point] =
-    val xExpanse = xExpansions(lines, expansion)
-    val yExpanse = yExpansions(lines, expansion)
-
+  private def allStars(
+    lines: Vector[Vector[Char]],
+    expansion: Long
+  ): Vector[Point] =
+    val yLocs = locations(lines, expansion)
+    val xLocs = locations(lines.transpose, expansion)
     for
-      (line, y) <- lines.zipWithIndex
-      (chr, x)  <- line.zipWithIndex
+      (line, y) <- lines.zip(yLocs)
+      (chr, x)  <- line.zip(xLocs)
       if chr == '#'
-    yield (x.toLong + xExpanse(x), y.toLong + yExpanse(y))
+    yield x -> y
 
-  private def allPairs[A](list: List[A]): List[(A, A)] = list match
-    case Nil          => Nil
-    case head :: tail =>
-      tail.strengthL(head) ::: allPairs(tail)
-
-  private def sumDistances(stars: List[(Point, Point)]): Long =
-    stars.foldMap:
-      case ((x0, y0), (x1, y1)) =>
+  private def sumDistances(stars: Iterator[Vector[Point]]): Long =
+    stars.toList.foldMap:
+      case Vector((x0, y0), (x1, y1)) =>
         (x0 - x1).abs + (y0 - y1).abs
+      case _                          => 0
 
   override def a(lines: Vector[String]): Long =
-    sumDistances(allPairs(allStars(lines, 1).toList))
+    sumDistances(allStars(lines.map(_.toVector), 2).combinations(2))
   end a
 
   override def b(lines: Vector[String]): Long =
-    sumDistances(allPairs(allStars(lines, 999999).toList))
+    sumDistances(allStars(lines.map(_.toVector), 1000000).combinations(2))
   end b
 
 end Day11
