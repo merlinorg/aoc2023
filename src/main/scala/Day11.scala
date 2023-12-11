@@ -6,6 +6,9 @@ import scalaz.Scalaz.*
 object Day11 extends AoC:
   type Point = (Long, Long)
 
+  extension (pt: Point)
+    def Δ(op: Point): Long = (pt._1 - op._1).abs + (pt._2 - op._2).abs
+
   private def locations(
     lines: Vector[Vector[Char]],
     expansion: Long
@@ -28,9 +31,8 @@ object Day11 extends AoC:
 
   private def sumDistances(stars: Iterator[Vector[Point]]): Long =
     stars.toList.foldMap:
-      case Vector((x0, y0), (x1, y1)) =>
-        (x0 - x1).abs + (y0 - y1).abs
-      case _                          => 0
+      case Vector(p0, p1) => p0 Δ p1
+      case _              => 0
 
   override def a(lines: Vector[String]): Long =
     sumDistances(allStars(lines.map(_.toVector), 2).combinations(2))
