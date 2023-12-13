@@ -9,14 +9,14 @@ object Day13 extends AoC:
   private def parseAreas(lines: Vector[String]): List[Area] =
     lines.selectSplit(_.nonEmpty).map(_.toVector.map(_.toVector))
 
+  private def differences(r0: Vector[Char], r1: Vector[Char]): Int =
+    r0.zip(r1).count(_ != _)
+
   private def reflections(a: Area, smudges: Int): Seq[Int] = {
     for {
       row            <- a.indices.drop(1)
       (before, after) = a.splitAt(row)
-      if smudges == before.reverse
-        .zip(after)
-        .foldMap:
-          case (r0, r1) => r0.zip(r1).count(_ != _)
+      if smudges == before.reverse.zip(after).foldMap(differences)
     } yield row
   }
 
