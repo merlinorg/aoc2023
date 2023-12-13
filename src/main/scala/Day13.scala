@@ -9,7 +9,7 @@ object Day13 extends AoC:
   private def parseAreas(lines: Vector[String]): List[Area] =
     lines.selectSplit(_.nonEmpty).map(_.toVector.map(_.toVector))
 
-  private def reflections(a: Vector[Vector[Char]], smudges: Int): Seq[Int] = {
+  private def reflections(a: Area, smudges: Int): Seq[Int] = {
     for {
       row            <- a.indices.drop(1)
       (before, after) = a.splitAt(row)
