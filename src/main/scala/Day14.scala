@@ -12,7 +12,7 @@ object Day14 extends AoC:
       y  <- lines.indices
       x  <- lines.indices
       if array(y)(x) == 'O'
-      yᛌ <- (y to 0 by -1).find(y2 => y2 == 0 || array(y2 - 1)(x) != '.').filter(_ < y)
+      yᛌ <- (y to 0 by -1).find(yᛌ => yᛌ == 0 || array(yᛌ - 1)(x) != '.').filter(_ < y)
     do
       array(yᛌ)(x) = 'O'
       array(y)(x) = '.'
