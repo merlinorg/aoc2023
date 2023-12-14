@@ -10,7 +10,7 @@ object Day14 extends AoC:
 
   extension (self: Dish)
     private def tilt: Dish =
-      self.map(line => "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString)
+      self.map(row => "#+|[^#]+".r.findAllIn(row).map(_.sorted.reverse).mkString)
 
     private def rotate: Dish =
       self.transpose.map(_.reverse.mkString)
@@ -23,9 +23,7 @@ object Day14 extends AoC:
       case None     => cycle(n - 1, d.tilt.rotate.tilt.rotate.tilt.rotate.tilt.rotate, map.updated(d, map.size))
 
     private def load: Long =
-      self.foldMap: line =>
-        line.toList.zipWithIndex.foldMap:
-          case (c, i) => if (c == 'O') line.length - i else 0
+      self.transpose.zipWithIndex.foldMap((row, i) => row.count(_ == 'O') * (self.length - i))
 
   override def part1(dish: Dish): Long =
     dish.rotateᛌ.tilt.load
@@ -35,18 +33,15 @@ object Day14 extends AoC:
 
 end Day14
 
-// Part 2 in 10 lines
+// Part 2 in "7" lines
 
-// def tilt(lines: Vector[String]): Vector[String] =
-//   lines.map(line => "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString)
+// def tilt(dish: Vector[String]): Vector[String] =
+//   dish.map(row => "#+|[^#]+".r.findAllIn(row).map(_.sorted.reverse).mkString)
 //
-// @tailrec def loop(l: Vector[String], map: Map[Vector[String], Int]): Vector[String] = map.get(l) match
+// @tailrec def loop(d: Vector[String], map: Map[Vector[String], Int]): Vector[String] = map.get(d) match
 //   case Some(to) => map.map(_.swap)(to + (1000000000 - map.size) % (map.size - to))
-//   case None     =>
-//     loop((0 until 4).foldLeft(l)((l, _) => tilt(l).transpose.map(_.reverse.mkString)), map.updated(l, map.size))
+//   case None     => loop((0 until 4).foldLeft(d)((d, _) => tilt(d).transpose.map(_.reverse.mkString)), map.updated(d, map.size))
 //
-// val lines = Source.fromResource("day-14.txt").getLines.toVector.map(_.reverse).transpose.map(_.mkString)
+// val dish = Source.fromResource("day-14.txt").getLines.toVector.map(_.reverse).transpose.map(_.mkString)
 //
-// loop(lines, Map.empty).foldMap: line =>
-//   line.toList.zipWithIndex.foldMap:
-//     case (c, i) => if (c == 'O') line.length - i else 0
+// loop(dish, Map.empty).transpose.zipWithIndex.foldMap((row, i) => row.count(_ == 'O') * (dish.size - i))
