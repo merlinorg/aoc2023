@@ -6,39 +6,39 @@ import scalaz.Scalaz.*
 import scala.annotation.tailrec
 
 object Day14 extends AoC:
-  private type Area = Vector[String]
-  
-  private def tilt(lines: Area): Area =
-    lines.map: line =>
-      "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString
+  private type Dish = Vector[String]
 
-  private def load(lines: Area): Long =
-    lines.foldMap: line =>
-      line.toList.zipWithIndex.foldMap:
-        case (c, i) => if (c == 'O') lines.length - i else 0
+  extension (self: Dish)
+    private def tilt: Dish =
+      self.map(line => "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString)
 
-  private def rotate(lines: Area): Area =
-    lines.transpose.map(_.reverse.mkString)
+    private def rotate: Dish =
+      self.transpose.map(_.reverse.mkString)
 
-  private def rotateᛌ(lines: Area): Area =
-    lines.map(_.reverse).transpose.map(_.mkString)
+    private def rotateᛌ: Dish =
+      self.map(_.reverse).transpose.map(_.mkString)
 
-  override def part1(lines: Area): Long =
-    load(tilt(rotateᛌ(lines)))
+    @tailrec private def cycle(n: Int, d: Dish = self, map: Map[Dish, Int] = Map.empty): Dish = map.get(d) match
+      case Some(to) => map.map(_.swap)(to + n % (map.size - to))
+      case None     => cycle(n - 1, d.tilt.rotate.tilt.rotate.tilt.rotate.tilt.rotate, map.updated(d, map.size))
 
-  override def part2(lines: Area): Long =
-    @tailrec def loop(l: Area, map: Map[Area, Int]): Area = map.get(l) match
-      case Some(to) => map.map(_.swap)(to + (1000000000 - map.size) % (map.size - to))
-      case None     => loop((0 until 4).foldLeft(l)((l, _) => rotate(tilt(l))), map.updated(l, map.size))
-    load(loop(rotateᛌ(lines), Map.empty))
+    private def load: Long =
+      self.foldMap: line =>
+        line.toList.zipWithIndex.foldMap:
+          case (c, i) => if (c == 'O') line.length - i else 0
+
+  override def part1(dish: Dish): Long =
+    dish.rotateᛌ.tilt.load
+
+  override def part2(dish: Dish): Long =
+    dish.rotateᛌ.cycle(1_000_000_000).load
 
 end Day14
 
-// Part 2 in 11 lines
+// Part 2 in 10 lines
 
 // def tilt(lines: Vector[String]): Vector[String] =
-//   lines.map: line =>
-//     "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString
+//   lines.map(line => "#+|[^#]+".r.findAllIn(line).map(_.sortBy(_ != 'O')).mkString)
 //
 // @tailrec def loop(l: Vector[String], map: Map[Vector[String], Int]): Vector[String] = map.get(l) match
 //   case Some(to) => map.map(_.swap)(to + (1000000000 - map.size) % (map.size - to))
