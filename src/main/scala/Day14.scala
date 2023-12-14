@@ -3,7 +3,7 @@ package org.merlin.aoc2023
 import scalaz.*
 import scalaz.Scalaz.*
 
-import scala.collection.mutable
+import scala.annotation.tailrec
 
 object Day14 extends AoC:
   private def tilt(lines: Vector[String]): Vector[String] =
@@ -30,18 +30,9 @@ object Day14 extends AoC:
     load(tilt(lines))
 
   override def b(lines: Vector[String]): Long =
-    val cache  = mutable.Map.empty[Vector[String], Int]
-    val result = for
-      (from, to) <- Iterator
-                      .iterate(lines): l =>
-                        (0 until 4).foldLeft(l)((l, _) => rotate(tilt(l)))
-                      .zipWithIndex
-                      .map: (l, i) =>
-                        i -> cache.getOrElseUpdate(l, i)
-                      .find(_ > _)
-      lastIndex   = to + (1000000000 - from) % (from - to)
-      last        = cache.map(_.swap)(lastIndex)
-    yield load(last)
-    result | 0
+    @tailrec def loop(l: Vector[String], map: Map[Vector[String], Int]): Long = map.get(l) match
+      case Some(to) => load(map.map(_.swap)(to + (1000000000 - map.size) % (map.size - to)))
+      case None     => loop((0 until 4).foldLeft(l)((l, _) => rotate(tilt(l))), map.updated(l, map.size))
+    loop(lines, Map.empty)
 
 end Day14
