@@ -9,7 +9,7 @@ object Day14 extends AoC:
   private def tilt(lines: Vector[String]): Vector[String] =
     val array = lines.toArray.map(_.toArray)
     for
-      y  <- lines.indices.drop(1)
+      y  <- lines.indices
       x  <- lines.indices
       if array(y)(x) == 'O'
       yᛌ <- (y to 0 by -1).find(y2 => y2 == 0 || array(y2 - 1)(x) != '.').filter(_ < y)
