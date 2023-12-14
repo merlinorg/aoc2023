@@ -19,7 +19,7 @@ object Day7 extends AoC:
       strengthsA.indexOf
     )
 
-  override def a(lines: Vector[String]): Long = f(lines, strengthA)
+  override def part1(lines: Vector[String]): Long = f(lines, strengthA)
 
   private val strengthsB = "J23456789TQKA".toList
 
@@ -28,6 +28,6 @@ object Day7 extends AoC:
     val best :: rest    = cards.sorted.reverse: @unchecked
     jokers + best :: rest ::: hand.toList.map(strengthsB.indexOf)
 
-  override def b(lines: Vector[String]): Long = f(lines, strengthB)
+  override def part2(lines: Vector[String]): Long = f(lines, strengthB)
 
 end Day7

@@ -27,16 +27,16 @@ object Day2 extends AoC:
               .withDefaultValue(0)
       id.toInt -> rounds
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     val possibilities = lines
       .map(parse)
       .collect:
         case (id, rounds) if rounds.forall(isPlausible) => id
 
     possibilities.sum
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     implicit val maxMonoid: Monoid[Int] = Monoid.instance(_ max _, 0)
 
     val powers = lines
@@ -47,6 +47,6 @@ object Day2 extends AoC:
           minima("red") * minima("green") * minima("blue")
 
     powers.sum
-  end b
+  end part2
 
 end Day2

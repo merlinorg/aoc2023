@@ -17,7 +17,7 @@ object Day1 extends AoC:
 
   private val DigRe = ("[0-9]" :: Digits).mkString("|").r
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     val calibrations = for
       line  <- lines
       first <- line.find(_.isDigit)
@@ -25,9 +25,9 @@ object Day1 extends AoC:
     yield s"$first$last".toInt
 
     calibrations.sum
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     val calibrations = for
       line      <- lines
       matches    = DigRe.findAllIn(line).toList
@@ -40,6 +40,6 @@ object Day1 extends AoC:
     yield s"$firstDigit$lastDigit".toInt
 
     calibrations.sum
-  end b
+  end part2
 
 end Day1

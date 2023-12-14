@@ -23,10 +23,10 @@ object Day14 extends AoC:
   private def rotateᛌ(lines: Area): Area =
     lines.map(_.reverse).transpose.map(_.mkString)
 
-  override def a(lines: Area): Long =
+  override def part1(lines: Area): Long =
     load(tilt(rotateᛌ(lines)))
 
-  override def b(lines: Area): Long =
+  override def part2(lines: Area): Long =
     @tailrec def loop(l: Area, map: Map[Area, Int]): Area = map.get(l) match
       case Some(to) => map.map(_.swap)(to + (1000000000 - map.size) % (map.size - to))
       case None     => loop((0 until 4).foldLeft(l)((l, _) => rotate(tilt(l))), map.updated(l, map.size))

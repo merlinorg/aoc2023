@@ -8,9 +8,9 @@ trait AoC:
 
   protected val NumRe: Regex = "-?\\d+".r
 
-  def a(lines: Vector[String]): Long
+  def part1(lines: Vector[String]): Long
 
-  def b(lines: Vector[String]): Long
+  def part2(lines: Vector[String]): Long
 
   def main(args: Array[String]): Unit =
 
@@ -29,7 +29,7 @@ trait AoC:
 
     Using.resource(source): src =>
       val lines  = src.getLines.toVector
-      val result = if (part == "a") a(lines) else b(lines)
+      val result = if (part == "a") part1(lines) else part2(lines)
       println(result)
 
   end main

@@ -28,12 +28,12 @@ object Day11 extends AoC:
       if chr == '#'
     yield x -> y
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     allStars(lines, 2).combinations(2).toList.foldMap(v => v(0) Δ v(1))
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     allStars(lines, 1000000).combinations(2).toList.foldMap(v => v(0) Δ v(1))
-  end b
+  end part2
 
 end Day11

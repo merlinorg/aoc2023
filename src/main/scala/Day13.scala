@@ -19,11 +19,11 @@ object Day13 extends AoC:
       if smudges == before.reverse.zip(after).foldMap(differences)
     yield row
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     parseAreas(lines).foldMap: area =>
       reflections(area, 0).map(_ * 100).sum + reflections(area.transpose, 0).sum
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     parseAreas(lines).foldMap: area =>
       reflections(area, 1).map(_ * 100).sum + reflections(area.transpose, 1).sum
 

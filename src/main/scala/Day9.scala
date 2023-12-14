@@ -14,20 +14,20 @@ object Day9 extends AoC:
       case diffs =>
         loop(diffs, v.head + sum)
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     lines
       .map: line =>
         NumRe.findAllIn(line).map(_.toLong).toList.reverse
       .foldMap: values =>
         loop(values, 0)
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     lines
       .map: line =>
         NumRe.findAllIn(line).map(_.toLong).toList
       .foldMap: values =>
         loop(values, 0)
-  end b
+  end part2
 
 end Day9

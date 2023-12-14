@@ -58,14 +58,14 @@ object Day5 extends AoC:
     if (n > 0 && n < range.len) range.take(n) :: range.drop(n) :: Nil
     else range :: Nil
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     val seeds        = NumRe.findAllIn(lines.head).map(_.toLong).toList
     val head :: tail = parseAllMappings(lines.drop(2).toList): @unchecked
     val mappings     = tail.foldLeft(head)(combine)
     seeds.map(transform(_, mappings)).min
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     val pairs        = NumRe.findAllIn(lines.head).map(_.toLong).toList.grouped(2)
     val head :: tail = parseAllMappings(lines.drop(2).toList): @unchecked
     val mappings     = tail.foldLeft(head)(combine)
@@ -74,6 +74,6 @@ object Day5 extends AoC:
     val values       = seeds.map(seed => transform(seed.src, mappings)) ++
       mappings.filter(mapping => seeds.exists(_.maps(mapping.src))).map(_.dst)
     values.min
-  end b
+  end part2
 
 end Day5

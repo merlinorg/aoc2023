@@ -10,14 +10,14 @@ object Day8 extends AoC:
       case (acc, s"$from = ($l, $r)") =>
         acc.updated(from, Map('L' -> l, 'R' -> r))
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     val lr    = LazyList.continually(lines.head).flatten
     val rules = parseRules(lines.drop(2))
 
     lr.scanLeft("AAA"): (pos, dir) =>
       rules(pos)(dir)
     .indexOf("ZZZ")
-  end a
+  end part1
 
   @tailrec private def gcd(x: Long, y: Long): Long =
     if (y == 0) x else gcd(y, x % y)
@@ -26,7 +26,7 @@ object Day8 extends AoC:
     list.foldLeft(1L): (a, b) =>
       b * a / gcd(a, b)
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     val lr    = LazyList.continually(lines.head).flatten
     val rules = parseRules(lines.drop(2))
 
@@ -36,6 +36,6 @@ object Day8 extends AoC:
       .indexWhere(_.endsWith("Z"))
 
     lcm(rules.keys.filter(_.endsWith("A")).map(count))
-  end b
+  end part2
 
 end Day8

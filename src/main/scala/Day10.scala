@@ -42,16 +42,16 @@ object Day10 extends AoC:
     paths.drop(1).find(_.head == s).get
   end longestLoop
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     longestLoop(lines).length / 2
-  end a
+  end part1
 
   private val walls = connections
     .collect:
       case (chr, dirs) if chr != 'S' && dirs.contains(N) => chr
     .toSet
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     val w    = lines.head.length
     val path = longestLoop(lines)
     val els  = path.toSet

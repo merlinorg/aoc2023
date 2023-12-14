@@ -19,16 +19,16 @@ object Day3 extends AoC:
       mtch      <- RunRe.findAllMatchIn(line)
     yield Run(mtch.start, y, mtch.matched)
 
-  override def a(lines: Vector[String]): Long =
+  override def part1(lines: Vector[String]): Long =
     val runs = parse(lines)
 
     val parts = runs.filter: run =>
       run.isNum && runs.exists(r => !r.isNum && r.isAdjacent(run))
 
     parts.map(_.toInt).sum
-  end a
+  end part1
 
-  override def b(lines: Vector[String]): Long =
+  override def part2(lines: Vector[String]): Long =
     val runs = parse(lines)
 
     val gears = for
@@ -38,6 +38,6 @@ object Day3 extends AoC:
     yield adj.map(_.toInt).product
 
     gears.sum
-  end b
+  end part2
 
 end Day3
