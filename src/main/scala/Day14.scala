@@ -12,9 +12,9 @@ object Day14 extends AoC:
       y  <- lines.indices.drop(1)
       x  <- lines.indices
       if array(y)(x) == 'O'
-      y2 <- (y to 0 by -1).find(y2 => y2 == 0 || array(y2 - 1)(x) != '.').filter(_ < y)
+      yᛌ <- (y to 0 by -1).find(y2 => y2 == 0 || array(y2 - 1)(x) != '.').filter(_ < y)
     do
-      array(y2)(x) = 'O'
+      array(yᛌ)(x) = 'O'
       array(y)(x) = '.'
     array.toVector.map(_.mkString)
 
