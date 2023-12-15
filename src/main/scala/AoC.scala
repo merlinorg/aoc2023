@@ -15,7 +15,7 @@ trait AoC:
   def main(args: Array[String]): Unit =
 
     val num    = NumRe.findFirstIn(getClass.getSimpleName).get
-    val part   = if (args.contains("b")) "b" else "a"
+    val part   = if (args.contains("2")) 2 else 1
     val sample = args.contains("sample")
 
     val source = Try:
@@ -29,7 +29,7 @@ trait AoC:
 
     Using.resource(source): src =>
       val lines  = src.getLines.toVector
-      val result = if (part == "a") part1(lines) else part2(lines)
+      val result = if (part == 1) part1(lines) else part2(lines)
       println(result)
 
   end main
