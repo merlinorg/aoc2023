@@ -8,7 +8,7 @@ object Day15 extends AoC:
 
   extension (self: String)
     private def hash: Int =
-      self.foldLeft(0)((a, c) => ((a + c.toInt) * 17) % 256)
+      self.foldLeft(0)((h, c) => ((h + c) * 17) % 256)
 
   extension (self: List[Lens])
     private def remove(label: String): List[Lens] =
@@ -16,7 +16,7 @@ object Day15 extends AoC:
 
     private def add(label: String, focus: Int): List[Lens] =
       if (self.exists(_._1 == label)) self.map(lens => if (lens._1 == label) label -> focus else lens)
-      else self ::: (label -> focus) :: Nil
+      else self :+ (label -> focus)
 
   override def part1(lines: Vector[String]): Long =
     lines.flatMap(_.split(",")).foldMap(_.hash)
