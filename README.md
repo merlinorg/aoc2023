@@ -17,3 +17,5 @@ sbt:aoc2023> runMain org.merlin.aoc2023.Day1 2 sample
 sbt:aoc2023> runMain org.merlin.aoc2023.Day1 2
 54076
 ```
+
+Input files in this repo are encrypted with [git-crypt](https://www.agwa.name/projects/git-crypt/) so, you know, use your own.
