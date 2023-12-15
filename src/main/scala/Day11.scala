@@ -30,10 +30,8 @@ object Day11 extends AoC:
 
   override def part1(lines: Vector[String]): Long =
     allStars(lines, 2).combinations(2).toList.foldMap(v => v(0) Δ v(1))
-  end part1
 
   override def part2(lines: Vector[String]): Long =
-    allStars(lines, 1000000).combinations(2).toList.foldMap(v => v(0) Δ v(1))
-  end part2
+    allStars(lines, 1_000_000).combinations(2).toList.foldMap(v => v(0) Δ v(1))
 
 end Day11

@@ -8,7 +8,8 @@ lazy val root = (project in file("."))
     idePackagePrefix := Some("org.merlin.aoc2023"),
     libraryDependencies ++=  Seq(
       "org.scalaz" %% "scalaz-core" % "7.3.7",
-      "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4"
+      "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
+      "org.scalatest" %% "scalatest" % "3.2.15" % "test"
     ),
     javaOptions += "-Xmx16G",
   )
