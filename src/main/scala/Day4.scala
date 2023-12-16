@@ -1,6 +1,6 @@
 package org.merlin.aoc2023
 
-import scalaz.Scalaz._
+import scalaz.Scalaz.*
 
 object Day4 extends AoC:
 

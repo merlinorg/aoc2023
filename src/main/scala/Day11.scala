@@ -7,7 +7,7 @@ object Day11 extends AoC:
   type Point = (Long, Long)
 
   extension (pt: Point)
-    def Δ(op: Point): Long = (pt._1 - op._1).abs + (pt._2 - op._2).abs
+    private infix def Δ(op: Point): Long = (pt._1 - op._1).abs + (pt._2 - op._2).abs
 
   private def inflate(
     lines: Vector[Vector[Char]],

@@ -19,6 +19,7 @@ class AoCTest extends AnyFreeSpec with Matchers {
   test(Day13, 405, 34202, 400, 34230)
   test(Day14, 136, 109833, 64, 99875)
   test(Day15, 1320, 503154, 145, 251353)
+  test(Day16, 46, 7067, 51, 7324)
 
   def test(day: AoC, sample1: Long, answer1: Long, sample2: Long, answer2: Long): Unit = {
     val num = "\\d+".r.findFirstIn(day.getClass.getSimpleName).get.toInt

@@ -11,5 +11,6 @@ lazy val root = (project in file("."))
       "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
       "org.scalatest" %% "scalatest" % "3.2.15" % "test"
     ),
+    scalacOptions ++= Seq("-deprecation", "-source:future", "-Werror"),
     javaOptions += "-Xmx16G",
   )
