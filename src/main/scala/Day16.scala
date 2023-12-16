@@ -10,7 +10,7 @@ object Day16 extends AoC:
     def step: Beam = copy(x = x + dx, y = y + dy)
 
   private def energized(lines: Vector[String], beam0: Beam): Long =
-    val visited = mutable.Map.empty[(Int, Int), Boolean]
+    val visited = mutable.Set.empty[(Int, Int)]
     val dedup   = mutable.Set.empty[Beam]
     val beams   = mutable.Queue(beam0)
     while (beams.nonEmpty)
@@ -18,7 +18,7 @@ object Day16 extends AoC:
       if (dedup.add(beam))
         val next = beam.step
         if (next.x >= 0 && next.x < lines.length && next.y >= 0 && next.y < lines.length)
-          visited.update(next.x -> next.y, true)
+          visited.add(next.x -> next.y)
           lines(next.y)(next.x) match
             case '/'                 =>
               beams.enqueue(next.copy(dx = -next.dy, dy = -next.dx))
