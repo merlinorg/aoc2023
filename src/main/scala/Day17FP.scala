@@ -7,18 +7,10 @@ import scala.collection.SortedSet
 object Day17FP extends AoC:
   private type City = Vector[String]
 
-  private type Key = (Int, Int, Int, Int, Int)
-
-  private final case class Crucible(loss: Int, x: Int, y: Int, dx: Int, dy: Int, count: Int):
-    def key: Key = Tuple.fromProductTyped(this).drop(1)
-
+  private final case class Crucible(x: Int, y: Int, dx: Int, dy: Int, count: Int):
     def forward: Crucible = copy(x = x + dx, y = y + dy, count = count + 1)
-
-    def turn: Crucible = copy(x = x + dy, y = y + dx, dx = dy, dy = dx, count = 1)
-
-    def turnᛌ: Crucible = copy(x = x - dy, y = y - dx, dx = -dy, dy = -dx, count = 1)
-
-    def cooled(amount: Int): Crucible = copy(loss = loss + amount)
+    def turn: Crucible    = copy(x = x + dy, y = y + dx, dx = dy, dy = dx, count = 1)
+    def turnᛌ: Crucible   = copy(x = x - dy, y = y - dx, dx = -dy, dy = -dx, count = 1)
 
     def moves(min: Int, max: Int): List[Crucible] =
       (count < max) ?? List(forward) ++ (count >= min) ?? List(turn, turnᛌ)
@@ -27,26 +19,27 @@ object Day17FP extends AoC:
 
   private given Ordering[Crucible] = Ordering.by(Tuple.fromProductTyped)
 
-  private final case class State(queue: SortedSet[Crucible], visited: Map[Key, Int]):
+  private final case class State(queue: SortedSet[(Int, Crucible)], seen: Set[Crucible]):
     def update(city: City, min: Int, max: Int): State =
-      val crucibles = for
-        moved <- queue.head.moves(min, max) if moved.within(city)
-        cooled = moved.cooled(city(moved.y)(moved.x).asDigit) if visited.get(cooled.key).forall(_ > cooled.loss)
-      yield cooled
-      copy(queue = queue.tail ++ crucibles, visited = visited ++ crucibles.map(c => c.key -> c.loss))
+      val (loss, crucible) = queue.head
 
-    def finisher(city: City, min: Int): Option[Crucible] =
-      queue.headOption.filter(c => c.x == city.head.length - 1 && c.y == city.length - 1 && c.count >= min)
-  
+      val moves = for
+        moved   <- crucible.moves(min, max) if moved.within(city) && !seen.contains(moved)
+        heatLoss = loss + city(moved.y)(moved.x).asDigit
+      yield heatLoss -> moved
+
+      State(queue.tail ++ moves, seen ++ moves.map(_._2))
+
+    def solution(city: City, min: Int): Option[Long] =
+      queue.headOption.collect:
+        case (heatLoss, c) if c.x == city.head.length - 1 && c.y == city.length - 1 && c.count >= min => heatLoss
+
   private def solve(city: City, min: Int, max: Int): Long =
     Iterator
-      .iterate(State(SortedSet(Crucible(0, 0, 0, 1, 0, 0), Crucible(0, 0, 0, 0, 1, 0)), Map.empty)): state =>
+      .iterate(State(SortedSet(0 -> Crucible(0, 0, 1, 0, 0), 0 -> Crucible(0, 0, 0, 1, 0)), Set.empty)): state =>
         state.update(city, min, max)
-      .findMap(_.finisher(city, min))
-      .loss
+      .findMap(_.solution(city, min))
 
   override def part1(city: City): Long = solve(city, 0, 3)
 
   override def part2(city: City): Long = solve(city, 4, 10)
-
-end Day17FP
