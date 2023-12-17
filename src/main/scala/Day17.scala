@@ -17,7 +17,7 @@ object Day17 extends AoC:
 
     def within(city: Vector[String]): Boolean = x >= 0 && y >= 0 && x < city.head.length && y < city.length
 
-    def loseHeat(city: Vector[String]): Crucible = copy(loss = loss + within(city) ?? city(y)(x) - '0')
+    def loseHeat(city: Vector[String]): Crucible = copy(loss = loss + within(city) ?? city(y)(x).asDigit)
 
   private given Ordering[Crucible] = Ordering.by(x => -x.loss)
 
