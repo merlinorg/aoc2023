@@ -9,7 +9,7 @@ object Day17 extends AoC:
   private final case class Crucible(x: Int, y: Int, dx: Int, dy: Int, count: Int, loss: Int):
     def key: (Int, Int, Int, Int, Int) = (x, y, dx, dy, count)
 
-    def step: Crucible = copy(x = x + dx, y = y + dy, count = count + 1)
+    def forward: Crucible = copy(x = x + dx, y = y + dy, count = count + 1)
 
     def turn: Crucible = copy(x = x + dy, y = y + dx, dx = dy, dy = dx, count = 1)
 
@@ -20,7 +20,7 @@ object Day17 extends AoC:
     def loseHeat(city: Vector[String]): Crucible = if (within(city)) copy(loss = loss + city(y)(x) - '0') else this
 
   private def solve(city: Vector[String], min: Int, max: Int): Long =
-    var best    = Option.empty[Crucible]
+    var best    = Option.empty[Crucible]                            // ლ(ಠ益ಠლ)
     val visited = mutable.Map.empty[(Int, Int, Int, Int, Int), Int] // key -> loss
     val queue   = mutable.Queue(Crucible(0, 0, 1, 0, 0, 0), Crucible(0, 0, 0, 1, 0, 0))
     while (queue.nonEmpty)
@@ -30,7 +30,7 @@ object Day17 extends AoC:
         if ((crucible.x == city.length - 1) && (crucible.y == city.length - 1) && (crucible.count >= min))
           if (best.forall(_.loss > crucible.loss)) best = Some(crucible)
         else
-          if (crucible.count < max) queue.enqueue(crucible.step.loseHeat(city))
+          if (crucible.count < max) queue.enqueue(crucible.forward.loseHeat(city))
           if (crucible.count >= min) queue.enqueue(crucible.turn.loseHeat(city), crucible.turnᛌ.loseHeat(city))
     best.cata(_.loss, 0)
 
