@@ -26,7 +26,7 @@ object Day16 extends AoC:
     private def nextPhotons(board: Vector[String]): List[Photon] =
       for
         photon    <- photons if !seen.contains(photon)
-        moved      = photon.move if moved.x >= 0 && moved.x < board.length && moved.y >= 0 && moved.y < board.length
+        moved      = photon.move if moved.x >=< board.length && moved.y >=< board.length
         reflected <- moved.reflect(board(moved.y)(moved.x))
       yield reflected
 

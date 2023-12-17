@@ -27,18 +27,18 @@ class AoCTest extends AnyFreeSpec with Matchers {
     s"Day $num" - {
       "Part 1" - {
         "Sample Input" in {
-          day.part1(AoC.readLines(num, 1, sample = true)) shouldBe sample1
+          day.part1(readLines(num, 1, sample = true)) shouldBe sample1
         }
         "Real Input" in {
-          day.part1(AoC.readLines(num, 1)) shouldBe answer1
+          day.part1(readLines(num, 1)) shouldBe answer1
         }
       }
       "Part 2" - {
         "Sample Input" in {
-          day.part2(AoC.readLines(num, 2, sample = true)) shouldBe sample2
+          day.part2(readLines(num, 2, sample = true)) shouldBe sample2
         }
         "Real Input" in {
-          day.part2(AoC.readLines(num, 2)) shouldBe answer2
+          day.part2(readLines(num, 2)) shouldBe answer2
         }
       }
     }

@@ -15,7 +15,7 @@ object Day17 extends AoC:
 
     def turnᛌ: Crucible = copy(x = x - dy, y = y - dx, dx = -dy, dy = -dx, count = 1)
 
-    def within(city: Vector[String]): Boolean = x >= 0 && y >= 0 && x < city.head.length && y < city.length
+    def within(city: Vector[String]): Boolean = x >=< city.head.length && y >=< city.length
 
     def loseHeat(city: Vector[String]): Crucible = copy(loss = loss + within(city) ?? city(y)(x).asDigit)
 
