@@ -39,3 +39,5 @@ final case class Loc(x: Int, y: Int):
   inline def >=<(board: Board): Boolean = x >=< board.head.length && y >=< board.length
 
 given Ordering[Loc] = Ordering.by(Tuple.fromProductTyped)
+
+val origin: Loc = Loc(0, 0)
