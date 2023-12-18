@@ -20,6 +20,7 @@ enum Dir(val dx: Int, val dy: Int):
 given Ordering[Dir] = Ordering.by(_.ordinal)
 
 final case class Loc(x: Int, y: Int):
+  def mulAdd(dir: Dir, count: Int): Loc = Loc(x + dir.dx * count, y + dir.dy * count)
   inline def +(dir: Dir): Loc           = Loc(x + dir.dx, y + dir.dy)
   inline def -(dir: Dir): Loc           = Loc(x - dir.dx, y - dir.dy)
   inline def >=<(board: Board): Boolean = x >=< board.head.length && y >=< board.length
