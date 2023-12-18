@@ -23,12 +23,13 @@ object Day18 extends AoC:
   private def perimeter(rules: Vector[(Dir, Int)]): Vector[Loc] =
     rules
       .zip(rules.tail :+ rules.head)
-      .scanLeft(false -> Loc(0, 0)): // not generally correct since I assume prior winding
+      .scanLeft(false -> Loc(0, 0)): // not generally correct since I assume prior winding but shrug
         case ((occw, loc), ((dir, count), (ndir, _))) =>
-          val ccw = dir == ndir.ccw
-          ccw -> loc.mulAdd(dir, count + (if (ccw != occw) 0 else if (ccw) 1 else -1))
+          val ccw    = dir == ndir.ccw
+          val length = if (ccw != occw) count else if (ccw) count + 1 else count - 1
+          ccw -> (loc + dir * length)
       .map(_._2)
 
-  override def part1(lines: Vector[String]): Long = area(perimeter(parse1(lines)))
+  override def part1(lines: Vector[String]): Long = lines |> parse1 |> perimeter |> area
 
-  override def part2(lines: Vector[String]): Long = area(perimeter(parse2(lines)))
+  override def part2(lines: Vector[String]): Long = lines |> parse2 |> perimeter |> area
