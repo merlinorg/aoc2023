@@ -1,5 +1,6 @@
 package org.merlin.aoc2023
 
+import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
 
 // number extensions
@@ -13,10 +14,24 @@ extension [A](self: Iterator[A]) def findMap[B](f: A => Option[B]): B = self.fla
 private val WordRe = "\\S+".r
 
 // string extensions
+
 extension (self: String)
   def numbers: Vector[Long]          = NumRe.findAllIn(self).map(_.toLong).toVector
   def words: Vector[String]          = WordRe.findAllIn(self).toVector
   def commaSeparated: Vector[String] = self.split(',').toVector
+  def characters: Vector[String]     = self.split("").toVector
+
+// vector extensions
+
+extension [A](self: Vector[A]) def mapToMap[B, C](f: A => (B, C)): Map[B, C] = self.map(f).toMap
+
+// range extensions
+extension (self: NumericRange[Long])
+  def splitLess(limit: Long): (NumericRange[Long], NumericRange[Long]) =
+    self.splitAt((limit - self.head).toInt)
+
+  def splitGreater(limit: Long): (NumericRange[Long], NumericRange[Long]) =
+    self.splitAt((1 + limit - self.head).toInt).swap
 
 // a board is a vector of strings
 
