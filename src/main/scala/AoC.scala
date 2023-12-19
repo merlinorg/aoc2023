@@ -25,6 +25,6 @@ trait AoC:
     println(result)
   end main
 
-  def part1(lines: Vector[String]): Long
+  def part1(lines: Vector[String]): Any
 
-  def part2(lines: Vector[String]): Long
+  def part2(lines: Vector[String]): Any

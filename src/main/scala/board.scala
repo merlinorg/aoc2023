@@ -10,6 +10,14 @@ extension (self: Long) inline def >=<(n: Long): Boolean = self >= 0 && self < n
 
 extension [A](self: Iterator[A]) def findMap[B](f: A => Option[B]): B = self.flatMap(f).next()
 
+private val WordRe = "\\S+".r
+
+// string extensions
+extension (self: String)
+  def numbers: Vector[Long]          = NumRe.findAllIn(self).map(_.toLong).toVector
+  def words: Vector[String]          = WordRe.findAllIn(self).toVector
+  def commaSeparated: Vector[String] = self.split(',').toVector
+
 // a board is a vector of strings
 
 type Board = Vector[String]
@@ -19,6 +27,10 @@ extension (self: Board)
   def se: Loc                     = Loc(self.head.length - 1, self.length - 1)
   def apply(loc: Loc): Char       = self(loc.y.toInt)(loc.x.toInt)
   def get(loc: Loc): Option[Char] = Option.when(loc >=< self)(self(loc))
+
+  def split: (Board, Board) =
+    val index = self.indexWhere(_.isEmpty)
+    self.slice(0, index) -> self.slice(1 + index, self.length)
 
 // the cardinal directions
 
@@ -63,3 +75,11 @@ final case class Vec(direction: Dir, magnitude: Long):
   inline def +(addend: Long): Vec     = copy(magnitude = magnitude + addend)
   inline def -(subtrahend: Long): Vec = copy(magnitude = magnitude - subtrahend)
   inline def *(multiplier: Long): Vec = copy(magnitude = magnitude * multiplier)
+
+// geometries
+
+extension (self: Vector[Vec])
+  def vertices: Vector[Loc] = self.scanLeft(Origin)(_ + _)
+  def perimeter: Long       = self.map(_.magnitude).sum
+
+extension (self: Vector[Loc]) def area: Long = self.zip(self.tail).map((a, b) => a.x * b.y - b.x * a.y).sum.abs / 2
