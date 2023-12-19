@@ -7,35 +7,41 @@ import scala.annotation.tailrec
 import scala.collection.immutable.NumericRange
 
 object Day19 extends AoC:
-  private type Part = Map[String, Long]
+  private type Rating = 'a' | 'x' | 's' | 'm'
+
+  private type WorkflowName = String
+
+  private type Part = Map[Rating, Long]
+
+  extension (self: String) private def toRating: Rating = self.charAt(0) match { case rating: Rating => rating }
 
   // a rule defines which workflow a part goes to, optionally based on a condition
 
   private sealed trait Rule:
-    def next: String
+    def next: WorkflowName
     def matches(values: Part): Boolean
 
-  private final case class TerminalRule(next: String) extends Rule:
+  private final case class TerminalRule(next: WorkflowName) extends Rule:
     def matches(values: Part): Boolean = true
 
-  private final case class ConditionalRule(rating: String, less: Boolean, value: Long, next: String) extends Rule:
+  private final case class ConditionalRule(rating: Rating, less: Boolean, value: Long, next: WorkflowName) extends Rule:
     def matches(values: Part): Boolean = if (less) values(rating) < value else values(rating) > value
 
   // parse the rules and the parts
 
   extension (self: Vector[String])
-    private def parse: (Map[String, Vector[Rule]], Vector[Part]) =
+    private def parse: (Map[WorkflowName, Vector[Rule]], Vector[Part]) =
       self.split.bimap(
         _.mapToMap:
           case s"$name{$workflow}" =>
             name -> workflow.commaSeparated.map:
-              case s"$prop<$value:$dest" => ConditionalRule(prop, true, value.toLong, dest)
-              case s"$prop>$value:$dest" => ConditionalRule(prop, false, value.toLong, dest)
-              case dest                  => TerminalRule(dest),
+              case s"$rating<$value:$dest" => ConditionalRule(rating.toRating, true, value.toLong, dest)
+              case s"$rating>$value:$dest" => ConditionalRule(rating.toRating, false, value.toLong, dest)
+              case dest                    => TerminalRule(dest),
         _.map:
           case s"{$part}" =>
             part.commaSeparated.mapToMap:
-              case s"$name=$value" => name -> value.toLong
+              case s"$rating=$value" => rating.toRating -> value.toLong
       )
 
   // part 1, just thread all the parts through the workflows until they reach A
@@ -43,7 +49,7 @@ object Day19 extends AoC:
   override def part1(lines: Vector[String]): Long =
     val (workflows, parts) = lines.parse
 
-    @tailrec def loop(name: String, part: Part): Long = workflows.get(name) match
+    @tailrec def loop(name: WorkflowName, part: Part): Long = workflows.get(name) match
       case Some(workflow)      => loop(workflow.find(_.matches(part)).get.next, part)
       case None if name == "A" => part.values.sum
       case None                => 0
@@ -55,7 +61,7 @@ object Day19 extends AoC:
   override def part2(lines: Vector[String]): Long =
     val (workflows, _) = lines.parse
 
-    def loop(name: String, parts: Map[String, NumericRange[Long]]): Long = workflows.get(name) match
+    def loop(name: WorkflowName, parts: Map[Rating, NumericRange[Long]]): Long = workflows.get(name) match
       // if we match a workflow then split the parts among each of the rules
       case Some(workflow) =>
         val (_, ruleMatches) = workflow.mapAccumL(parts):
@@ -71,4 +77,4 @@ object Day19 extends AoC:
 
       case _ => 0
 
-    loop("in", "amxs".characters.mapToMap(_ -> (1L until 4001L)))
+    loop("in", "amxs".characters.mapToMap(_.toRating -> (1L until 4001L)))
