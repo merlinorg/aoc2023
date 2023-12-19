@@ -23,7 +23,14 @@ extension (self: String)
 
 // vector extensions
 
-extension [A](self: Vector[A]) def mapToMap[B, C](f: A => (B, C)): Map[B, C] = self.map(f).toMap
+extension [A](self: Vector[A])
+  def mapToMap[B, C](f: A => (B, C)): Map[B, C] = self.map(f).toMap
+
+  def mapAcc[B, C](c0: C)(f: (C, A) => (C, B)): (C, Vector[B]) =
+    self.foldLeft(c0 -> Vector.empty[B]):
+      case ((c, bs), a) => f(c, a) match { case (c2, b) => (c2, bs :+ b) }
+
+  def mapS[B, C](c0: C)(f: (C, A) => (C, B)): Vector[B] = mapAcc(c0)(f)._2
 
 // range extensions
 extension (self: NumericRange[Long])
@@ -32,6 +39,8 @@ extension (self: NumericRange[Long])
 
   def splitGreater(limit: Long): (NumericRange[Long], NumericRange[Long]) =
     self.splitAt((1 + limit - self.head).toInt).swap
+
+  def range: Long = if (self.isEmpty) 0 else 1 + self.last - self.head
 
 // a board is a vector of strings
 
