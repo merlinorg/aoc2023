@@ -137,7 +137,7 @@ object Day20 extends AoC:
       case None                          => this
 
     // The result is the product of lows and highs
-    def result: Long = lows * highs
+    def solution: Option[Long] = Option.when(complete)(lows * highs)
 
   object Problem1FSM:
     final val Initial = Problem1FSM(0, 0, false)
@@ -152,9 +152,7 @@ object Day20 extends AoC:
     Iterator
       .iterate(MachineFSM(machine))(_.nextState)
       .scanLeft(Problem1FSM.Initial)(_ + _)
-      .find(_.complete)
-      .get
-      .result
+      .findMap(_.solution)
 
   // The problem 2 state machine is looking for the least common multiple of the
   // cycle lengths of the subgraphs that feed into the output "rx" module. When it
@@ -169,8 +167,7 @@ object Day20 extends AoC:
       case _                                                 => this
 
     // We are complete if we have the cycle value for each subgraph
-    def complete: Boolean = cycles.values.forall(_ > 0)
-    def result: Long      = lcm(cycles.values)
+    def solution: Option[Long] = Option.when(cycles.values.forall(_ > 0))(lcm(cycles.values))
 
     private def lcm(list: Iterable[Long]): Long      = list.foldLeft(1L)((a, b) => b * a / gcd(a, b))
     @tailrec private def gcd(x: Long, y: Long): Long = if y == 0 then x else gcd(y, x % y)
@@ -196,6 +193,4 @@ object Day20 extends AoC:
     Iterator
       .iterate(MachineFSM(machine))(_.nextState)
       .scanLeft(Problem2FSM(machine))(_ + _)
-      .find(_.complete)
-      .get
-      .result
+      .findMap(_.solution)
