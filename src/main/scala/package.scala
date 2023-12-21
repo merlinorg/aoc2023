@@ -5,7 +5,16 @@ import scala.language.implicitConversions
 
 // number extensions
 
-extension (self: Long) inline def >=<(n: Long): Boolean = self >= 0 && self < n
+extension (self: Int)
+  inline def %%(n: Int): Int =
+    val mod = self % n
+    if mod < 0 then mod + n else mod
+
+extension (self: Long)
+  inline def >=<(n: Long): Boolean = self >= 0 && self < n
+  inline def %%(n: Long): Long     =
+    val mod = self % n
+    if mod < 0 then mod + n else mod
 
 // iterator extensions
 
@@ -49,10 +58,17 @@ extension (self: NumericRange[Long])
 type Board = Vector[String]
 
 extension (self: Board)
+  def width                       = self.head.length
+  def height                      = self.length
   def nw: Loc                     = Origin
-  def se: Loc                     = Loc(self.head.length - 1, self.length - 1)
+  def se: Loc                     = Loc(width - 1, height - 1)
   def apply(loc: Loc): Char       = self(loc.y.toInt)(loc.x.toInt)
   def get(loc: Loc): Option[Char] = Option.when(loc >=< self)(self(loc))
+
+  def find(char: Char): Loc = locations.find(apply(_) == char).get
+
+  def locations: Vector[Loc] =
+    self.indices.toVector.flatMap(y => self.head.indices.map(x => Loc(x, y)))
 
   def split: (Board, Board) =
     val index = self.indexWhere(_.isEmpty)
@@ -87,6 +103,8 @@ final case class Loc(x: Long, y: Long):
   inline def -(subtrahend: Vec): Loc = Loc(x - subtrahend.dx, y - subtrahend.dy)
 
   inline def >=<(board: Board): Boolean = x >=< board.head.length && y >=< board.length
+
+  def adjacents: Vector[Loc] = Dir.values.map(this + _).toVector
 
 given Ordering[Loc] = Ordering.by(Tuple.fromProductTyped)
 
