@@ -43,6 +43,14 @@ extension [A](self: Vector[A])
   // stateful map, maps a vector with an accumulator then drops the accumulator at the end
   def mapS[B, C](c0: C)(f: (C, A) => (C, B)): Vector[B] = mapAcc(c0)(f)._2
 
+  def groupToMap[B, C](using ABC: A <:< (B, C)): Map[B, Vector[C]] = self
+    .map(ABC)
+    .foldLeft(Map.empty[B, Vector[C]]):
+      case (bc, (b, c)) =>
+        bc.updatedWith(b):
+          case None     => Some(Vector(c))
+          case Some(cs) => Some(cs :+ c)
+
 // range extensions
 extension (self: NumericRange[Long])
   def splitLess(limit: Long): (NumericRange[Long], NumericRange[Long]) =
@@ -105,6 +113,8 @@ final case class Loc(x: Long, y: Long):
   inline def >=<(board: Board): Boolean = x >=< board.head.length && y >=< board.length
 
   def adjacents: Vector[Loc] = Dir.values.map(this + _).toVector
+
+  def manhattan(l: Loc): Long = (l.x - x).abs + (l.y - y).abs
 
 given Ordering[Loc] = Ordering.by(Tuple.fromProductTyped)
 
