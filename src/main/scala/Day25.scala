@@ -15,14 +15,13 @@ object Day25 extends AoC {
       (edges ++ edges.map(_.swap)).groupToMap
 
   // want https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm but this seems to work shrug
+  @tailrec private def partition(graph: Graph, vertices: Set[String]): Set[String] =
+    if vertices.foldMap(graph(_).count(!vertices(_))) == 3 then vertices
+    else partition(graph, vertices + (graph.keySet -- vertices).minBy(graph(_).count(!vertices(_))))
+
   override def part1(lines: Vector[String]): Long =
     val graph = lines.parse
-
-    @tailrec def loop(group: Set[String]): Long =
-      if group.foldMap(graph(_).count(!group(_))) == 3 then group.size
-      else loop(group + (graph.keySet -- group).minBy(graph(_).count(!group(_))))
-
-    val size = loop(Set(graph.keySet.head))
+    val size  = partition(graph, Set(graph.keySet.head)).size
     size * (graph.size - size)
 
   override def part2(lines: Vector[String]): Long = 0
