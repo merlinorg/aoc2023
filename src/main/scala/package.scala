@@ -51,6 +51,9 @@ extension [A](self: Vector[A])
           case None     => Some(Vector(c))
           case Some(cs) => Some(cs :+ c)
 
+  // all non-self element pairs
+  def allPairs: Vector[(A, A)] = self.tails.toVector.tail.flatMap(self.zip)
+
 // range extensions
 extension (self: NumericRange[Long])
   def splitLess(limit: Long): (NumericRange[Long], NumericRange[Long]) =
