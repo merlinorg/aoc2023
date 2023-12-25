@@ -2,8 +2,8 @@ package org.merlin.aoc2023
 
 object Day24 extends AoC:
   private final case class Hail(x: Long, y: Long, z: Long, vx: Long, vy: Long, vz: Long):
-    def xy: Hail2D = Hail2D(x, y, vx, vy)
-    def xz: Hail2D = Hail2D(x, z, vx, vz)
+    def xyProjection: Hail2D = Hail2D(x, y, vx, vy)
+    def xzProjection: Hail2D = Hail2D(x, z, vx, vz)
 
   private final case class Hail2D(x: Long, y: Long, vx: Long, vy: Long):
     private val a: BigDecimal = BigDecimal(vy)
@@ -36,7 +36,7 @@ object Day24 extends AoC:
     yield (hail0, hail1)
 
   override def part1(lines: Vector[String]): Long =
-    val hailsXY = lines.parse.map(_.xy)
+    val hailsXY = lines.parse.map(_.xyProjection)
     if lines.length == 5 then intersections(hailsXY, 7, 27).size
     else intersections(hailsXY, 200000000000000L, 400000000000000L).size
 
@@ -53,7 +53,7 @@ object Day24 extends AoC:
     def next: Spiral =
       if count > 0 then copy(x = x + dx, y = y + dy, count = count - 1)
       else if dy == 0 then copy(x = x + dx, y = y + dy, dy = dx, dx = -dy, count = limit)
-      else copy(x = x + dx, y = y + dy, dy = dx, dx = -dy, count = limit + 1, limit = 1 + limit)
+      else copy(x = x + dx, y = y + dy, dy = dx, dx = -dy, count = limit + 1, limit = limit + 1)
 
   private object Spiral:
     final val Start = Spiral(0, 0, 1, 0, 0, 0)
@@ -61,13 +61,13 @@ object Day24 extends AoC:
   override def part2(lines: Vector[String]): Long =
     val hails = lines.parse
 
-    val hailsXY = hails.map(_.xy)
+    val hailsXY = hails.map(_.xyProjection)
     val (x, y)  = Iterator
       .iterate(Spiral.Start)(_.next)
       .findMap: spiral =>
         findOrigin(hailsXY, spiral.x, spiral.y)
 
-    val hailsXZ = hails.map(_.xz)
+    val hailsXZ = hails.map(_.xzProjection)
     val (_, z)  = Iterator
       .iterate(Spiral.Start)(_.next)
       .findMap: spiral =>
